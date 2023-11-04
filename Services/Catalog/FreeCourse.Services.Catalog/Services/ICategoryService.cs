@@ -1,0 +1,12 @@
+﻿using FreeCourse.Services.Catalog.Dtos;
+using FreeCourse.Shared.Dtos;
+
+namespace FreeCourse.Services.Catalog.Services
+{
+    public interface ICategoryService
+    {
+        Task<Response<CategoryDto>> CreateAsync(CategoryDto category);
+        Task<Response<List<CategoryDto>>> GetAllAsync();
+        Task<Response<CategoryDto>> GetByIdAsync(string id);
+    }
+}

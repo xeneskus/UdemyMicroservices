@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:3303",
+      "sslPort": 44303
+    }
+  },
+  "profiles": {
+    "FreeCourse.Services.Catalog": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false, //tüm microservice ayaga kalkar kaldırınca ondan bir sürü google sekme açılır - tarayıcı açılmaz kendimiz google aramaya yazıp gideriz
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5011", //5010 du 5011 yaptık 12 13 diye gidecek
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": false,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5011",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

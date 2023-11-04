@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  catalogdb:
+   image: mongo
+   container_name: catalogdb
+   ports:
+    - "27017:27017"
+   volumes:
+    - catalogdb_volume:data/db  
+  basketdb:
+   image: redis
+   container_name: basketdb
+   ports:
+    - "6379:6379"
+  identitydb:
+   image: mcr.microsoft.com/mssql/server
+   container_name: identitydb
+   ports:
+   - "1433:1433"
+   volumes:
+   - identitydb_volume:/var/opt/mssql
+   environment:
+    - ACCEPT_EULA=Y
+    - MSSQL_SA_PASSWORD=password123*
+  orderdb:
+   image: mcr.microsoft.com/mssql/server
+   container_name: orderdb
+   ports:
+    - "1444:1433"
+   volumes:
+    - orderdb_volume:/var/opt/mssql/data 
+   environment:
+    - ACCEPT_EULA=Y
+    - MSSQL_SA_PASSWORD=password123*
+  rabbitmq:
+   image: rabbitmq
+   container_name: rabbitmq
+   ports:
+   - "5672:5672"
+   - "15672:15672"
