@@ -7,12 +7,12 @@ namespace FreeCourse.Web.Models
         [Required]
         [Display(Name ="Email Adresiniz")]
         public string Email { get; set; }
-        [Display(Name = "Şifreniz")]
 
+        [Display(Name = "Şifreniz")]
         [Required]
         public string Password { get; set; }
-        [Display(Name = "Beni Hatırla")]
 
+        [Display(Name = "Beni Hatırla")]
         public bool IsRemember { get; set; }
     }
 }

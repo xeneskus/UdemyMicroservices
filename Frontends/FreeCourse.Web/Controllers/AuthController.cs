@@ -1,5 +1,5 @@
 ﻿using FreeCourse.Web.Models;
-using FreeCourse.Web.Services.Interface;
+using FreeCourse.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeCourse.Web.Controllers
@@ -27,7 +27,7 @@ namespace FreeCourse.Web.Controllers
 
             }
             var response = await _identityService.SignIn(signInInput);
-            if (response.IsSuccessful)
+            if (!response.IsSuccessful)
             {
                 response.Errors.ForEach(x =>
                 {

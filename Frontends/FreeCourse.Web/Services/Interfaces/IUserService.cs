@@ -1,6 +1,6 @@
 ﻿using FreeCourse.Web.Models;
 
-namespace FreeCourse.Web.Services.Interface
+namespace FreeCourse.Web.Services.Interfaces
 {
     public interface IUserService
     {

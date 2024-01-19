@@ -1,7 +1,7 @@
 using FreeCourse.Web.Handler;
 using FreeCourse.Web.Models;
 using FreeCourse.Web.Services;
-using FreeCourse.Web.Services.Interface;
+using FreeCourse.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<ServiceApiSettings>(builder.Configuration.GetSection("ServiceApiSettings"));
-builder.Services.Configure<ServiceApiSettings>(builder.Configuration.GetSection("ClientSettings"));
+builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<IIdentityService, IdentityService>();
 var serviceApiSettings = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();

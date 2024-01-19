@@ -1,5 +1,5 @@
 ﻿using FreeCourse.Web.Exceptions;
-using FreeCourse.Web.Services.Interface;
+using FreeCourse.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
@@ -25,7 +25,7 @@ namespace FreeCourse.Web.Handler
             var response = await base.SendAsync(request, cancellationToken);
             if (response.StatusCode==System.Net.HttpStatusCode.Unauthorized)
             {
-                var tokenResponse = await _identityService.GetAcessTokenByRefreshToken();
+                var tokenResponse = await _identityService.GetAccessTokenByRefreshToken();
                 if (tokenResponse!=null)
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);

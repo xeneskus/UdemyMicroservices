@@ -1,4 +1,4 @@
-﻿using FreeCourse.Web.Services.Interface;
+﻿using FreeCourse.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

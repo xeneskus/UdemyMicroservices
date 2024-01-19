@@ -1,5 +1,5 @@
 ﻿using FreeCourse.Web.Models;
-using FreeCourse.Web.Services.Interface;
+using FreeCourse.Web.Services.Interfaces;
 
 namespace FreeCourse.Web.Services
 {

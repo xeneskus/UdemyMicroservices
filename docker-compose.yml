@@ -1,9 +1,9 @@
 version: '3.8'
 services:
-  catalogdb:
-   image: mongo
   basketdb:
     image: redis
+  discountdb:
+    image: postgres
   identitydb:
    image: mcr.microsoft.com/mssql/server
   orderdb:

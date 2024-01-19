@@ -1,6 +1,6 @@
 ﻿using FreeCourse.Shared.Dtos;
 using FreeCourse.Web.Models;
-using FreeCourse.Web.Services.Interface;
+using FreeCourse.Web.Services.Interfaces;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,15 +19,15 @@ namespace FreeCourse.Web.Services
         private readonly ClientSettings _clientSettings;
         private readonly ServiceApiSettings _serviceApiSettings;
 
-        public IdentityService(HttpClient httpClient, IHttpContextAccessor contextAccessor, IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings)
+        public IdentityService(HttpClient client, IHttpContextAccessor httpContextAccessor, IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings)
         {
-            _httpClient = httpClient;
-            _httpContextAccessor = contextAccessor;
+            _httpClient = client;
+            _httpContextAccessor = httpContextAccessor;
             _clientSettings = clientSettings.Value;
             _serviceApiSettings = serviceApiSettings.Value;
         }
 
-        public async Task<TokenResponse> GetAcessTokenByRefreshToken()
+        public async Task<TokenResponse> GetAccessTokenByRefreshToken()
         {
             var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
@@ -39,8 +39,10 @@ namespace FreeCourse.Web.Services
             {
                 throw disco.Exception;
             }
-            var refreshToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);//cookiden refresh tokenı aldıdk
-            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest()
+
+            var refreshToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
+            RefreshTokenRequest refreshTokenRequest = new()
             {
                 ClientId = _clientSettings.WebClientForUser.ClientId,
                 ClientSecret = _clientSettings.WebClientForUser.ClientSecret,
@@ -48,24 +50,29 @@ namespace FreeCourse.Web.Services
                 Address = disco.TokenEndpoint
             };
 
-            var token = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);//yeni bir token alıyoruz
-            if (token.IsError) //token bir hatası varsa alamadıysak yani token
+            var token = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
+
+            if (token.IsError)
             {
-                return null; //istersen burada loglama yap
+                return null;
             }
-            var authenticationTokens=new List<AuthenticationToken>()
+
+            var authenticationTokens = new List<AuthenticationToken>()
             {
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.RefreshToken,Value=token.AccessToken},
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.ExpiresIn,Value=DateTime.Now.AddSeconds(token.ExpiresIn).ToString("O",CultureInfo.InvariantCulture)},
+                new AuthenticationToken{ Name=OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
+                   new AuthenticationToken{ Name=OpenIdConnectParameterNames.RefreshToken,Value=token.RefreshToken},
+
+                      new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
             };
 
-            var authenticationResult = await _httpContextAccessor.HttpContext.AuthenticateAsync();//elimizdekileri alıyoruz
+            var authenticationResult = await _httpContextAccessor.HttpContext.AuthenticateAsync();
+
             var properties = authenticationResult.Properties;
-            properties.StoreTokens(authenticationTokens);//bizden bir authenticationteken istedi verdik
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticationResult.Principal,properties);//şema ismi istiyor parantezde daha sonra claim istiyor
+            properties.StoreTokens(authenticationTokens);
+
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authenticationResult.Principal, properties);
+
             return token;
-        
         }
 
         public async Task RevokeRefreshToken()
@@ -81,6 +88,7 @@ namespace FreeCourse.Web.Services
                 throw disco.Exception;
             }
             var refreshToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
             TokenRevocationRequest tokenRevocationRequest = new()
             {
                 ClientId = _clientSettings.WebClientForUser.ClientId,
@@ -89,10 +97,11 @@ namespace FreeCourse.Web.Services
                 Token = refreshToken,
                 TokenTypeHint = "refresh_token"
             };
+
             await _httpClient.RevokeTokenAsync(tokenRevocationRequest);
         }
 
-        public async Task<Response<bool>> SignIn(SignInInput signInInput)
+        public async Task<Response<bool>> SignIn(SignInInput signinInput)
         {
             var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
@@ -109,18 +118,22 @@ namespace FreeCourse.Web.Services
             {
                 ClientId = _clientSettings.WebClientForUser.ClientId,
                 ClientSecret = _clientSettings.WebClientForUser.ClientSecret,
-                UserName = signInInput.Email,
-                Password = signInInput.Password,
-                Address = disco.TokenEndpoint //istek nereyaa yapılacagı token end pointe yap
+                UserName = signinInput.Email,
+                Password = signinInput.Password,
+                Address = disco.TokenEndpoint
             };
 
             var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+
             if (token.IsError)
             {
                 var responseContent = await token.HttpResponse.Content.ReadAsStringAsync();
+
                 var errorDto = JsonSerializer.Deserialize<ErrorDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return Response<bool>.Fail(errorDto.Errors, 404);
+
+                return Response<bool>.Fail(errorDto.Errors, 400);
             }
+
             var userInfoRequest = new UserInfoRequest
             {
                 Token = token.AccessToken,
@@ -128,30 +141,31 @@ namespace FreeCourse.Web.Services
             };
 
             var userInfo = await _httpClient.GetUserInfoAsync(userInfoRequest);
+
             if (userInfo.IsError)
             {
-
                 throw userInfo.Exception;
             }
 
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity
-                (userInfo.Claims, CookieAuthenticationDefaults.AuthenticationScheme,"name","role");
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(userInfo.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
 
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             var authenticationProperties = new AuthenticationProperties();
-            authenticationProperties.StoreTokens(new List<AuthenticationToken>(){
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.RefreshToken,Value=token.AccessToken},
-                new AuthenticationToken{Name = OpenIdConnectParameterNames.ExpiresIn,Value=DateTime.Now.AddSeconds(token.ExpiresIn).ToString("O",CultureInfo.InvariantCulture)},
+
+            authenticationProperties.StoreTokens(new List<AuthenticationToken>()
+            {
+                new AuthenticationToken{ Name=OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
+                   new AuthenticationToken{ Name=OpenIdConnectParameterNames.RefreshToken,Value=token.RefreshToken},
+
+                      new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
             });
 
-            authenticationProperties.IsPersistent = signInInput.IsRemember;
-            await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme,authenticationProperties);
+            authenticationProperties.IsPersistent = signinInput.IsRemember;
+
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
 
             return Response<bool>.Success(200);
-
-            
         }
     }
 }
