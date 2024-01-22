@@ -5,7 +5,7 @@ namespace FreeCourse.Shared.Dtos
 {
     public class Response<T>
     {
-         public T Data { get; set; }//başarılı oldugunda gidecek olan bir datam olsun
+        public T Data { get; set; }//başarılı oldugunda gidecek olan bir datam olsun
         [JsonIgnore]
         public int StatusCode { get; set; }
         public bool IsSuccessful { get; set; } //başarılı mı degil mi
