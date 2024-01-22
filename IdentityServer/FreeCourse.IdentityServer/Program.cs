@@ -57,7 +57,7 @@ namespace FreeCourse.IdentityServer
                     applicationDbContext.Database.Migrate(); //hem veritabanı yoksa oluşacak hem oluşmamış migrtation varsa ayapıyor
 
                     var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    if(userManager.Users.Any())//herhangi bir kullanıcı yok ise
+                    if(!userManager.Users.Any())//herhangi bir kullanıcı yok ise
                     { //kullanıcı oluşturacak - wait senkron çalışmasını sağlar
                         userManager.CreateAsync(new ApplicationUser { UserName = "enes", Email = "enes@gmail.com", City = "İstanbul" }, "Enes123+").Wait();
                     }

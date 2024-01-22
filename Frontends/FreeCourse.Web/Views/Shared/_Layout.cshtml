@@ -32,15 +32,15 @@
                                     @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item asp-controller="User" asp-action="Index">Profil</a></li>
-                                    <li><a class="dropdown-item" href="">Çıkış</a></li>
+                                      <li><a class="dropdown-item" asp-controller="User" asp-action="Index">Profil</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Auth" asp-action="LogOut">Çıkış</a></li>
                                 </ul>
                             </li>
                         </ul>
                     }
                     else
                     {
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="SignIn">Giriş Yap</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="SignIn">Giriş yap</a>
                     }
                 </div>
             </div>
