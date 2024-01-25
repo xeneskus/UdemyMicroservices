@@ -28,7 +28,7 @@ namespace FreeCourse.Web.Services
 
         public async Task<List<CategoryViewModel>> GetAllCategoryAsync()
         {
-            var response = await _client.GetAsync("categoris");
+            var response = await _client.GetAsync("categories");
             if (response.IsSuccessStatusCode)
             {
                 return null;
