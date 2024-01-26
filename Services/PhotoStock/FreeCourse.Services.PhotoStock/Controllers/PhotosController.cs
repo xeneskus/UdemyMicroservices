@@ -21,7 +21,7 @@ namespace FreeCourse.Services.PhotoStock.Controllers
                     await photo.CopyToAsync(stream, cancellationToken);
                 }
 
-                var returnPath = "photos/" + photo.FileName;//foto kaydedildikten sonra nasıl bir path dönücem onu diyoruz
+                var returnPath = photo.FileName;//foto kaydedildikten sonra nasıl bir path dönücem onu diyoruz
                 PhotoDto photoDto = new() { Url = returnPath };
                 return CreateActionResultInstance(Response<PhotoDto>.Success(photoDto, 200));
             }
