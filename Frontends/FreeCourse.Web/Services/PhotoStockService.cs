@@ -1,4 +1,5 @@
-﻿using FreeCourse.Web.Models.PhotoStocks;
+﻿using FreeCourse.Shared.Dtos;
+using FreeCourse.Web.Models.PhotoStocks;
 using FreeCourse.Web.Services.Interfaces;
 
 namespace FreeCourse.Web.Services;
@@ -36,7 +37,8 @@ public class PhotoStockService : IPhotoStockService
             return null; //loglama
         }
 
-        return await response.Content.ReadFromJsonAsync<PhotoViewModel>();
+        var responseSuccess = await response.Content.ReadFromJsonAsync<Response<PhotoViewModel>>();
+        return responseSuccess.Data;
 
     }
 }
