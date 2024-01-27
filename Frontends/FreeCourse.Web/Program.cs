@@ -1,5 +1,6 @@
 using FreeCourse.Shared.Services;
 using FreeCourse.Web.Handler;
+using FreeCourse.Web.Helpers;
 using FreeCourse.Web.Models;
 using FreeCourse.Web.Services;
 using FreeCourse.Web.Services.Interfaces;
@@ -17,6 +18,7 @@ builder.Services.AddScoped<ISharedIdentityService, SharedIdentityService>();
 builder.Services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>();
 builder.Services.AddScoped<ResourceOwnerPasswordTokenHandler>();
 builder.Services.AddScoped<ClientCredentialTokenHandler>();
+builder.Services.AddSingleton<PhotoHelper>();
 builder.Services.AddAccessTokenManagement();
 
 var serviceApiSettings = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();
