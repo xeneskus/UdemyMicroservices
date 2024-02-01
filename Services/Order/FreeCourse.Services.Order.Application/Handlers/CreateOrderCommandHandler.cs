@@ -5,9 +5,9 @@ using FreeCourse.Services.Order.Infrastructure;
 using FreeCourse.Shared.Dtos;
 using MediatR;
 
-    namespace FreeCourse.Services.Order.Application.Handlers
-    {
-        public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Response<CreatedOrderDto>>
+namespace FreeCourse.Services.Order.Application.Handlers
+{
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Response<CreatedOrderDto>>
         {
             private readonly OrderDbContext _context;
 
