@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{79DCDD3F-C366-4196-8872-373AC939B6E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{3F808499-7BA7-41C6-9DB6-ADAE17E5F333}"
-	ProjectSection(SolutionItems) = preProject
-		Services\Basket\FreeCourse.Services.Basket\Program.cs = Services\Basket\FreeCourse.Services.Basket\Program.cs
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeCourse.Services.Catalog", "Services\Catalog\FreeCourse.Services.Catalog\FreeCourse.Services.Catalog.csproj", "{94A6FC1E-2D75-4B92-9C0F-FFA75279D48F}"
 EndProject
